@@ -13,8 +13,8 @@ func TestParseSub(t *testing.T) {
 }
 
 func TestNewAssReader(t *testing.T) {
-	assReader := NewAssReader("../res/5.ass")
-	fmt.Println(assReader.Subs[2])
+	assReader := NewAssReader("D:/unsystem/movie/res/75913c586447de9f2140bad20bad287f.ass")
+	fmt.Println(assReader.Subs[0])
 }
 
 func TestFuckme(t *testing.T) {

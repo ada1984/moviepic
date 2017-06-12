@@ -10,6 +10,7 @@ import (
 	"math/rand"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
@@ -28,6 +29,10 @@ func Md5WithFile(path string) string {
 
 	// fmt.Sprintf(fileMd5, "%x", h.Sum(nil)[:16])
 	return hex.EncodeToString(h.Sum(nil)[:16])
+}
+
+func Md5Name(name string) string {
+	return fmt.Sprintf("%x", md5.Sum([]byte(name)))
 }
 
 func RandIndex() int {
@@ -53,4 +58,15 @@ func FileExist(path string) bool {
 		}
 	}
 	return true
+}
+
+func ListFilesWithExt(path string, ext string) []string {
+	extFiles := []string{}
+	files, _ := ioutil.ReadDir(path)
+	for _, file := range files {
+		if !file.IsDir() && (filepath.Ext(filepath.Join(path, file.Name())) == ext) {
+			extFiles = append(extFiles, file.Name())
+		}
+	}
+	return extFiles
 }

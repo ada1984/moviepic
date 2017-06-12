@@ -1,10 +1,16 @@
 #ignore these files
 res/*
 pics/*
+done/*
 
 debug
 debug.test
 moviepic
+
+# av files #
+############
+*.mkv
+*.jpg
 
 # Compiled source # 
 ################### 

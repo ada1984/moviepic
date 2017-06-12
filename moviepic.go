@@ -14,42 +14,76 @@ import (
 const (
 	Prefix               string = ".jpg"
 	FFmpegCmdGeneratePic string = "ffmpeg -ss %f -i %s -vframes 1 -copyts -af asetpts=PTS-%f/TB -vf ass=%s,setpts=PTS-%f/TB -y %s"
-	FFmpegCmdGenerateSub string = "ffmpeg -i %s -map 0:%s -y res/1.ass"
+	FFmpegCmdGenerateSub string = "ffmpeg -i %s -map 0:%s -y %s"
 	FFmpegCmdShowInfo    string = "ffmpeg -i %s"
 	ResFolder            string = "./res"
+	DoneFolder           string = "./done"
+	MovieExt             string = ".mkv"
 )
 
 func init() {
+	if !FileExist(ResFolder) {
+		panic("找不到res文件夹")
+	}
+	if err := os.MkdirAll(DoneFolder, os.ModeDir); err != nil {
+		panic("建立done文件夹失败")
+	}
 }
+
+//由于vscode不支持stdin, 为了debug需要额外处理
+const (
+	DEBUG bool = false
+)
 
 func main() {
 	defer db.Close()
-	//....
-	fmt.Println("请输入电影名称(不需要文件后缀): ")
-	MovieName := ""
-	fmt.Scanln(&MovieName)
-	// MovieName = "【6v电影www.dy131.com】生化危机：灭绝.720p.国英双语.BD中英双字"
-	movieFile := MovieName + ".mkv"
+
+	fmt.Println("res文件夹下的mkv文件如下,请选择文件编号开始处理:")
+	movies := ListFilesWithExt("res", MovieExt)
+	if len(movies) <= 0 {
+		panic("在res下找不到mkv文件")
+	}
+	for i, v := range movies {
+		fmt.Printf("%d. %s\n", i+1, v)
+	}
+
+	movieIndex := -1
+	if DEBUG {
+		movieIndex = 1
+	} else {
+		fmt.Scanln(&movieIndex)
+		if movieIndex < 1 || movieIndex > len(movies) {
+			panic("找不到对应的编号")
+		}
+	}
+
+	movieFile := movies[movieIndex-1]
+
+	movieName := strings.TrimSuffix(movieFile, MovieExt)
 	movieFilePath := filepath.Join(ResFolder, movieFile)
 	if !FileExist(movieFilePath) {
 		panic("在res文件夹下找不到该电影")
 	}
 
 	//....
-	fmt.Println("根据下面信息选择要生成的字幕类型编号:")
 	ExecCmd(fmt.Sprintf(FFmpegCmdShowInfo, movieFilePath))
-	subIndex := ""
-	fmt.Scanln(&subIndex)
-	// subIndex = "4"
+	fmt.Println("根据上面信息选择要生成的字幕类型编号:")
 
-	assFile := "1.ass"
+	subIndex := ""
+	if DEBUG {
+		subIndex = "4"
+	} else {
+		fmt.Scanln(&subIndex)
+	}
+
+	assFile := Md5Name(movieFile) + ".ass"
 	assFilePath := filepath.Join(ResFolder, assFile)
 	os.Remove(assFilePath)
 	if FileExist(assFilePath) {
-		panic("在res文件夹下无法删除陈旧的字幕文件1.ass")
+		panic("在res文件夹下无法删除陈旧的字幕文件: " + assFile)
 	}
-	fmt.Println("在res文件夹下生成字幕文件:1.ass")
-	ExecCmd(fmt.Sprintf(FFmpegCmdGenerateSub, movieFilePath, subIndex))
+	fmt.Println("在res文件夹下生成字幕文件: " + assFile)
+	ExecCmd(fmt.Sprintf(FFmpegCmdGenerateSub, movieFilePath, subIndex, assFilePath))
 
 	//...
 	if !FileExist(assFilePath) {
@@ -61,7 +95,7 @@ func main() {
 		panic("cannot find valid ass file")
 	}
 	movieMd5 := Md5WithFile(movieFilePath)
-	movieModel := db.Movie{Name: MovieName, FileName: movieFile, Md5: movieMd5}
+	movieModel := db.Movie{Name: movieName, FileName: movieFile, Md5: movieMd5}
 	movieModel.Save()
 	if movieModel.ID <= 0 {
 		panic("failed to add movie to db or cannot find")
@@ -93,4 +127,6 @@ func main() {
 		}
 		picModel.Save()
 	}
+	os.Remove(assFilePath)
+	os.Rename(movieFilePath, filepath.Join(DoneFolder, movieFile))
 }

@@ -18,3 +18,11 @@ func TestExecCmd(t *testing.T) {
 func TestFileExist(t *testing.T) {
 	fmt.Println(FileExist("res/11.ass"))
 }
+
+func TestListFilesWithExt(t *testing.T) {
+	fmt.Println(ListFilesWithExt(".", ".go"))
+}
+
+func TestMd5Name(t *testing.T) {
+	fmt.Println(Md5Name("fuckme"))
+}

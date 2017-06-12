@@ -26,7 +26,9 @@ func NewSubText(text string) *SubText {
 func (subText *SubText) Parse(text string) {
 	splitedSubText := strings.SplitAfter(text, "}")
 	for _, v := range splitedSubText {
-		if v[len(v)-1] == '}' {
+		if len(v) < 1 {
+			subText.Text = ""
+		} else if v[len(v)-1] == '}' {
 			subText.Formats = append(subText.Formats, v)
 		} else {
 			subText.Text = v
