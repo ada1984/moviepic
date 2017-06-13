@@ -15,9 +15,9 @@ func (pic *Pic) Save() {
 
 //Exist ...
 func (pic *Pic) Exist() bool {
-	newPic := &Pic{Time: pic.Time, SubtitleID: pic.SubtitleID}
-	db.Where(newPic).First(newPic)
-	if db.NewRecord(newPic) { //cannot find
+	//newPic := &Pic{Time: pic.Time, SubtitleID: pic.SubtitleID}
+	db.Where(pic).First(pic)
+	if db.NewRecord(pic) { //cannot find
 		return false
 	}
 	return true

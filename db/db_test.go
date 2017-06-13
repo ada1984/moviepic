@@ -19,3 +19,12 @@ func TestDemo(t *testing.T) {
 	texts := []string{"a", "b", "c"}
 	fmt.Println(strings.Join(texts, ""))
 }
+
+func TestFindSubtitlesByKeyword(t *testing.T) {
+	fmt.Println(FindSubtitlesByKeyword("吹牛"))
+}
+
+// func TestPicExist(t *testing.T){
+// 	pic := Pic{SubtitleID:}
+// 	fmt.Println()
+// }

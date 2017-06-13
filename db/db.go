@@ -20,3 +20,26 @@ func init() {
 func Close() {
 	db.Close()
 }
+
+//FindPicByKeyword ...
+func FindSubtitlesByKeyword(keyword string) []Subtitle {
+	subs := []Subtitle{}
+	if keyword == "" {
+		return subs
+	}
+	db.Preload("Pic")
+	db.Where("text LIKE ?", "%"+keyword+"%").Find(&subs)
+	newSubs := []Subtitle{}
+	for _, sub := range subs {
+		db.Model(&sub).Related(&sub.Pic)
+		newSubs = append(newSubs, sub)
+	}
+	return newSubs
+	// 	pic := Pic{SubtitleID: sub.ID}
+	// 	if pic.Exist() {
+	// 		pics = append(pics, pic)
+	// 	}
+	// }
+	// return pics
+
+}

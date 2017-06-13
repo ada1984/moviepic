@@ -9,6 +9,7 @@ type Subtitle struct {
 	Start   int
 	End     int
 	MovieID int
+	Pic     Pic
 }
 
 //Insert ...
@@ -18,5 +19,3 @@ func (subtitle *Subtitle) Save() {
 		db.Create(subtitle)
 	}
 }
-
-// func (subtitle *Subtitle)
