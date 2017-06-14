@@ -21,7 +21,7 @@ func TestDemo(t *testing.T) {
 }
 
 func TestFindSubtitlesByKeyword(t *testing.T) {
-	fmt.Println(FindSubtitlesByKeyword("吹牛"))
+	fmt.Println(FindSubtitlesByKeyword("你", 30))
 }
 
 // func TestPicExist(t *testing.T){

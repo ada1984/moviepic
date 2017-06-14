@@ -3,6 +3,7 @@ package db
 import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql" //
+	"github.com/nadoo/convtrad"
 )
 
 var db *gorm.DB = nil
@@ -22,24 +23,15 @@ func Close() {
 }
 
 //FindPicByKeyword ...
-func FindSubtitlesByKeyword(keyword string) []Subtitle {
+func FindSubtitlesByKeyword(keyword string, limit int) []Subtitle {
 	subs := []Subtitle{}
 	if keyword == "" {
 		return subs
 	}
 	db.Preload("Pic")
-	db.Where("text LIKE ?", "%"+keyword+"%").Find(&subs)
-	newSubs := []Subtitle{}
-	for _, sub := range subs {
-		db.Model(&sub).Related(&sub.Pic)
-		newSubs = append(newSubs, sub)
+	db.Where("text LIKE ? OR text LIKE ?", "%"+convtrad.ToTrad(keyword)+"%", "%"+convtrad.ToSimp(keyword)+"%").Order("RAND()").Limit(limit).Find(&subs)
+	for i := range subs {
+		db.Model(&subs[i]).Related(&subs[i].Pic)
 	}
-	return newSubs
-	// 	pic := Pic{SubtitleID: sub.ID}
-	// 	if pic.Exist() {
-	// 		pics = append(pics, pic)
-	// 	}
-	// }
-	// return pics
-
+	return subs
 }

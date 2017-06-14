@@ -40,6 +40,7 @@ func main() {
 
 	fmt.Println("res文件夹下的mkv文件如下,请选择文件编号开始处理:")
 	movies := ListFilesWithExt("res", MovieExt)
+
 	if len(movies) <= 0 {
 		panic("在res下找不到mkv文件")
 	}
