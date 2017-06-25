@@ -125,7 +125,17 @@ func main() {
 		movie := movies[movieIndex-1]
 		movie.StartDeal()
 	} else {
-		pool := myutils.NewPool(3)
+		fmt.Println("选择同时处理的任务数:")
+		taskPool := 1
+		if DEBUG {
+			taskPool = 1
+		} else {
+			fmt.Scanln(&taskPool)
+			if taskPool < 1 {
+				taskPool = 1
+			}
+		}
+		pool := myutils.NewPool(taskPool)
 		for _, movie := range movies {
 			pool.Add(1)
 			go func(movie Movie) {

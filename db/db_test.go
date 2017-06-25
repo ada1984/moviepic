@@ -28,3 +28,12 @@ func TestFindSubtitlesByKeyword(t *testing.T) {
 // 	pic := Pic{SubtitleID:}
 // 	fmt.Println()
 // }
+
+func TestMovieFindAll(t *testing.T) {
+	condMovie := &Movie{}
+	fmt.Println(condMovie.FindAll())
+}
+
+func TestFindDuplicatePics(t *testing.T) {
+	fmt.Println(FindDuplicatePics(3, 434777563))
+}

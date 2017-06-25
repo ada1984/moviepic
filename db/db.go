@@ -6,6 +6,10 @@ import (
 	"github.com/nadoo/convtrad"
 )
 
+const (
+	SQLFindDuplicatePics string = "select pic.* from moviepic.pic,moviepic.subtitle where subtitle.movie_id = ? and pic.subtitle_id = subtitle.id and pic.name = ?"
+)
+
 var db *gorm.DB = nil
 
 func init() {
@@ -20,6 +24,19 @@ func init() {
 
 func Close() {
 	db.Close()
+}
+
+func FindDuplicatePics(movieId, picName int) []Pic {
+	pics := []Pic{}
+	rows, _ := db.Raw(SQLFindDuplicatePics, movieId, picName).Rows()
+	defer rows.Close()
+	for rows.Next() {
+		pic := Pic{}
+		// fmt.Println(rows.Scan(&pic))
+		db.ScanRows(rows, &pic)
+		pics = append(pics, pic)
+	}
+	return pics
 }
 
 //FindPicByKeyword ...

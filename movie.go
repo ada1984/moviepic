@@ -78,7 +78,6 @@ func (movie *Movie) StartDeal() {
 	}
 	rootPath := filepath.Join("./pics", strconv.Itoa(movie.DbMovie.ID))
 	os.MkdirAll(rootPath, os.ModeDir)
-	usedIndex := make(map[int]bool, len(assReader.Subs))
 	for _, sub := range assReader.Subs {
 		subModel := db.Subtitle{Text: sub.Text.Text, Format: strings.Join(sub.Text.Formats, ""),
 			Start: int(sub.Start * 100), End: int(sub.End * 100), MovieID: movie.DbMovie.ID}
@@ -93,8 +92,7 @@ func (movie *Movie) StartDeal() {
 		rand := 0
 		for {
 			rand = RandIndex()
-			if usedIndex[rand] == false {
-				usedIndex[rand] = true
+			if len(db.FindDuplicatePics(movie.DbMovie.ID, rand)) < 1 {
 				break
 			}
 		}

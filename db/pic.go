@@ -22,3 +22,10 @@ func (pic *Pic) Exist() bool {
 	}
 	return true
 }
+
+func (pic *Pic) Remove() {
+	if pic.ID != 0 {
+		db.Delete(pic)
+		pic.ID = 0
+	}
+}
