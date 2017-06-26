@@ -10,6 +10,7 @@ type Subtitle struct {
 	End     int
 	MovieID int
 	Pic     Pic
+	Movie   Movie
 }
 
 //Insert ...

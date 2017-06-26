@@ -46,9 +46,10 @@ func FindSubtitlesByKeyword(keyword string, limit int) []Subtitle {
 		return subs
 	}
 	db.Preload("Pic")
-	db.Where("text LIKE ? OR text LIKE ?", "%"+convtrad.ToTrad(keyword)+"%", "%"+convtrad.ToSimp(keyword)+"%").Order("RAND()").Limit(limit).Find(&subs)
-	for i := range subs {
-		db.Model(&subs[i]).Related(&subs[i].Pic)
-	}
+	db.Where("text LIKE ? OR text LIKE ?", "%"+convtrad.ToTrad(keyword)+"%", "%"+convtrad.ToSimp(keyword)+"%").Order("RAND()").Limit(limit).Preload("Movie").Preload("Pic").Find(&subs)
+	// for i := range subs {
+	// db.Model(&subs[i]).Related(&subs[i].Pic)
+	// db.Model(&subs[i]).Related(&subs[i].Movie)
+	// }
 	return subs
 }
